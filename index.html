@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./images/favicon.ico">
+  <title>Digital Charity Art</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="load()" class="grid-container">
+  <div class="header">
+    <a href="https://digitalcharityart.co.nz/" target="_Blank"><img src="./images/logo.png" class="logo"></a>
+    <button id="login" onclick="login()" class="walletbutton">
+      Login
+    </button>
+    <button id="logout" onclick="logout()" class="walletbutton hidden">
+      Logout
+    </button>
+  </div>
+  <div class="collection">
+    <div class="gap" id="nfts"></div>
+  </div>
+  <div class="carbon">
+    <div class="title">
+      <div class="title1">Your Balance</div>
+    </div>
+    <div class="grids">
+      <div class="grid-item">NFTs:</div>
+      <div class="grid-item" id="yourBalance">NaN</div>
+      <div class="grid-item">sKlima:</div>
+      <div class="grid-item" id="yourSklima">NaN</div>
+      <div class="grid-item">Total:</div>
+      <div class="grid-item" id="price2">NaN</div>
+    </div>
+    <div class="title">
+      <div class="title1">Carbon</div>
+    </div>
+    <div class="grids">
+      <div class="grid-item">Hectacres of Forest:</div>
+      <div class="grid-item" id="acres">NaN</div>
+      <div class="grid-item">Cars(Annual):</div>
+      <div class="grid-item" id="cars">NaN</div>
+      <div class="grid-item">Gallons of Gas:</div>
+      <div class="grid-item" id="gas">NaN</div>
+    </div>
+  </div>
+  <div class="treasury">
+    <div class="title">
+      <div class="title1">Treasury</div>
+    </div>
+    <div class="grids">
+      <div class="grid-item">NFTs:</div>
+      <div class="grid-item" id="treasuryOwned">NaN</div>
+      <div class="grid-item">Burned:</div>
+      <div class="grid-item" id="burned">NaN</div>
+      <div class="grid-item">sKlima:</div>
+      <div class="grid-item" id="sklimaTreasury">NaN</div>
+      <div class="grid-item">Total:</div>
+      <div class="grid-item" id="price">NaN</div>
+      <div class="grid-item">NFTs backed:</div>
+      <div class="grid-item" id="total">NaN</div>
+      <div class="grid-item">sKlima per NFT:</div>
+      <div class="grid-item" id="perNFT">NaN</div>
+      <div class="grid-item">Total:</div>
+      <div class="grid-item" id="price1">NaN</div>
+    </div>
+  </div>
+
+</body>
+
+<template id="nft_template">
+  <section>
+    <h1 class="nft1"></h1>
+
+    <a href="" target="_blank">
+      <img class="nft2" src="" alt="">
+    </a>
+  </section>
+</template>
+
+<script src=" https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js"></script>
+<script type="module" src="index.js"></script>
+<script>
+  window.userAddress = null;
+  async function load() {
+    // Init Web3 connected to Polygon network
+    window.web3 = new Web3(window.ethereum);
+    // Load in Localstore key
+    window.userAddress = window.localStorage.getItem("userAddress");
+    showInfo();
+  }
+
+  function showInfo() {
+    if (!window.userAddress) {
+      document.getElementById("yourBalance").innerHTML = 'NaN';
+      document.getElementById("yourSklima").innerHTML = 'NaN';
+      document.getElementById("price2").innerHTML = 'NaN';
+      document.getElementById("gas").innerHTML = 'NaN';
+      document.getElementById("acres").innerHTML = 'NaN';
+      document.getElementById("cars").innerHTML = 'NaN';
+      document.body.style.backgroundImage = "url('./images/1a.jpg')";
+      document.documentElement.style.setProperty('--var1', '#ff7a01');
+      document.documentElement.style.setProperty('--var2', '#296197');
+      const list = document.getElementById("nfts");
+      while (list.hasChildNodes()) {
+        list.removeChild(list.firstChild);
+      }
+      document.getElementById("login").classList.remove("hidden");
+      document.getElementById("logout").classList.add("hidden");
+      return false;
+    }
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("logout").classList.remove("hidden");
+  }
+
+  function logout() {
+    window.userAddress = null;
+    window.localStorage.removeItem("userAddress");
+    showInfo();
+  }
+  async function login() {
+    try {
+      const selectedAccount = await window.ethereum
+        .request({
+          method: "eth_requestAccounts",
+        })
+        .then((accounts) => accounts[0])
+        .catch(() => {
+          throw Error("No account selected!");
+        });
+      window.userAddress = selectedAccount;
+      window.localStorage.setItem("userAddress", selectedAccount);
+      showInfo();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+</script>
+
+
+</html>
